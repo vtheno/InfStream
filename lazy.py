@@ -70,7 +70,8 @@ print head(tmp,66)
 
 def head2(lst,n):
     if n==0:
-        return []
+        #return []
+        return lst
     else:
         tmp = dp(lst);lsta=force(tmp)
         return [car(lsta),head2(lazy_cdr(lsta),n-1)]
