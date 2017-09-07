@@ -26,7 +26,7 @@ def lazy_cdr(x):
 def inf_seq(a0,fn):
     #    return lazy_cons(a0,inf_seq(fn(a0),fn))
     # 直接用return 会直接...
-    # 想在这里尝试 eta 变换
+    # 想在这里尝试 eta ...
     yield lazy_cons(a0,inf_seq(fn(a0),fn))
 
 tmp = inf_seq(0,lambda x:x+1)
@@ -78,16 +78,9 @@ def head2(lst,n):
 print head2(tmp,66)
 
 def lazy_filter(pred,lst):
-    tmpa = dp(lst);tmpb = force(tmpa);
-    while True:
-        x = car(tmpb)
-        if pred(x):
-            yield x
-        tmpa = lazy_cdr(tmpb)
-        tmpb = force(tmpa)
+    # em....
+    pass
 
-for i in range(100):
-    print next(lazy_filter(lambda x:x%2==0,tmp))
         
 def lazy_map(fn,lst):
     tmp = dp(lst);lsta=force(tmp);obj=car(lsta)
