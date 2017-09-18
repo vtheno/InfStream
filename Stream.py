@@ -69,7 +69,7 @@ def make_integer_stream(first=1):
 
 
 def map_stream(fn,s):
-    """ 函数组合 """    
+    """ 函数组合 返回一个新的流"""
     if s.empty:
         return s
     def compute_rest():
@@ -77,7 +77,7 @@ def map_stream(fn,s):
     return Stream(fn(s.first),compute_rest)
 
 def filter_stream(fn,s):
-        
+    """ 函数组合 返回一个新的流"""
     if s.empty:
         return s
     def compute_rest():
@@ -86,6 +86,22 @@ def filter_stream(fn,s):
         return Stream(s.first,compute_rest)
     return compute_rest()
 # reduce is need all values ,so ..we no define
+
+def foldr(fn,end,s):
+    if s.empty:
+        return end
+    def compute_rest():
+        return foldr(fn,fn(s.first,end),s.rest)
+    return Stream(fn(s.first,end),compute_rest)
+
+reduce_stream = foldr
+    
+def foldl(fn,accum,s):
+    if s.empty:
+        return accum
+    def compute_rest():
+        return foldl(fn,fn(accum,s.first),s.rest)
+    return Stream(fn(accum,s.first),compute_rest)
 
 def take(s,n):
     if s.empty:
