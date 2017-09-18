@@ -61,7 +61,7 @@ class Stream(object):
 
 
 def make_integer_stream(first=1):
-    """ 抵归定义了 正整数 流(惰性序列) """
+    """ 递归定义了 正整数 流(惰性序列) """
     def compute_rest():
         return make_integer_stream(first+1)
     return Stream(first,compute_rest)
