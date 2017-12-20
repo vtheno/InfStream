@@ -1,5 +1,39 @@
 * SICP-In-Python 中的 Stream 的另一种想法,
-** SICP-In-Python 中用 Class(Object)的方式[fn:0} 来实现了 Stream
-   [fn:0] First Type Class
-** Generator object 由于 后续操作 是 破怀性 的 { Python 参数传递 }, 我的作法是 复制 一个相同的来进行后续展开 
-
+*** Generator.py
+    - 尝试用一个结构来表示一个流
+    - old_init_val 作为最初的 初始值
+    - init_func    作为最初 Stream 序列的构造函数
+    - init_val     作为序列下一个值的 初始值 ( next seq <=> init_func(init_val)
+    - firstForce   作为判断是否第一次从流中取值 ( 当然也可以用 store 是否为空来表示
+    - 该结构中 stroe 为一个 普通的列表(顺序存储已求值过的序列)
+    - 由 head 来取 从 0 开始 到 第 n 个 值
+      - ( 由于取值 则 引发 求值 已求过的值 存储在store
+      - ( 假设这个序列是 一个线性序列 则 取值 为 顺序相关
+      - ( 把 一个无穷流 当作 一个向量 来看 第 n 个元素 的位置是固定的话
+      - ( 先判断该 Stream 是否是 第一次 从中 取值 ,是的话 就 顺序求值...
+      - ( 如果 不是 第一次 从中取值 head 先判读 当前位置 既 0 ~ n ,要取出的向量大小 是否 小于 已经 显示求值存储到 store 里的
+      - ( 假设 对一个正整数流g , head(2,g) => 取 第 0 个 和 第 1 个 既 2 个
+      - 此时 store <=> [0,1] ;head(2,g) <=> [0,1]
+      - ( 此时如果再 取 第 0 个 或者 第 1 个 或者 第 0 个 和 第 1 个 则 head 直接从 g.store 里取
+      - 而不是再 根据 init_func 来依次 计算 流序列 的位置值 (消去了重复计算,但增加了存储和判断时间上的消耗
+    - Map
+      1. 构造一个复合函数来生成 相关序列
+	 1. (e.g, init_func = maps-fn(init_func(x)) 但这样是不行的 compose <=> map-fn(init_func(x))
+	 2. maps-fn <=> lambda x:x*2 ; init_func = lambda x:x+1; 
+	 3. |-> init_func     => 0 1 2 3 4 ... 
+	 4. |-> compose       => 0 (0+1)*2 => 3
+	 5. |-> but we need   => 0 2 4 6 8 ...
+	 6. emmmm ... 
+      2. 复制 类实例 的 相关信息 替换原先 迭代生成器 既 iter 函数
+	 1. 如果 不用 store 的话 ,emmmm 多复合几次的话 效果感人
+    - Filter and Reduce and other like it.
+*** yield.py
+    - emmmmm
+*** lazy.py
+    - emmmmm
+*** Stream.py
+    - emmmmm 
+**** SICP-In-Python 中用 Class(Object)的方式[fn:0] 来实现了 Stream
+     [fn:0] First Type Class
+**** Generator object python args[fn:1]  
+     [fn:1] 参数传递的是实例对象（Object instance
