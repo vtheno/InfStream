@@ -17,16 +17,18 @@
       - ( 此时如果再 取 第 0 个 或者 第 1 个 或者 第 0 个 和 第 1 个 则 head 直接从 g.store 里取
       - 而不是再 根据 init_func 来依次 计算 流序列 的位置值 (消去了重复计算,但增加了存储和判断时间上的消耗
     - Map
-      1. 构造一个复合函数来生成 相关序列
-	 1. (e.g, init_func = maps-fn(init_func(x)) 但这样是不行的 compose <=> map-fn(init_func(x))
-	 2. maps-fn <=> lambda x:x*2 ; init_func = lambda x:x+1; 
-	 3. |-> init_func     => 0 1 2 3 4 ... 
-	 4. |-> compose       => 0 (0+1)*2 => 3
-	 5. |-> but we need   => 0 2 4 6 8 ...
-	 6. emmmm ... 
-      2. 复制 类实例 的 相关信息 替换原先 迭代生成器 既 iter 函数
-	 1. 如果 不用 store 的话 ,emmmm 多复合几次的话 效果感人
-    - Filter and Reduce and other like it.
+      - 构造一个复合函数来生成 相关序列
+	- (e.g, init_func = maps-fn(init_func(x)) 但这样是不行的 compose <=> map-fn(init_func(x))
+	- maps-fn <=> lambda x:x*2 ; init_func = lambda x:x+1; 
+	- |-> init_func     => 0 1 2 3 4 ... 
+	- |-> compose       => 0 (0+1)*2 => 3
+	- |-> but we need   => 0 2 4 6 8 ...
+	- emmmm ... 
+      - 复制 类实例 的 相关信息 替换原先 迭代生成器 既 iter 函数
+      - 如果 不用 store 的话 ,emmmm 多复合几次的话 效果感人
+      - if use store then 用 Map 去构造新的 流 时 将显示 map一遍 源 Stream 中的 store 再拷贝到 Map 构造出来的流
+      - 实际上 Map 就是一个流 的 重新构造
+    - Filter and Reduce and other like Map.
 *** yield.py
     - emmmmm
 *** lazy.py

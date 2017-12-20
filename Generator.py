@@ -37,7 +37,6 @@ def head(n,stream):
         else:
             return [i for i in stream.store[0:n]]
         
-
 def get(n,stream):
     t = head(n,stream)
     #print 'get:',t
