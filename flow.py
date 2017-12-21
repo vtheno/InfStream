@@ -110,10 +110,10 @@ def test():
     print( s2.get(200),s2.take(100) )
     s3 = map_stream(lambda x:x*2 ,s)
     print( s3.get(2000) ,s3.take(100) )
-    #import timeit
-    #t1 = timeit.Timer('sum(range(100))')#'range(100)')
-    #t2 = timeit.Timer('sum(s.take(100))','from __main__ import s')
-    #print( t1.timeit(),t2.timeit() )
+    import timeit
+    t1 = timeit.Timer('sum(range(100))')#'range(100)')
+    t2 = timeit.Timer('sum(s.take(100))','from __main__ import make_inf;s=make_inf(lambda x:x+1)')
+    print( 'timeit:',t1.timeit(),t2.timeit() )
     #print( s.get(3) )
     print( g )
     show( s )
