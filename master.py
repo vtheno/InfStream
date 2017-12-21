@@ -1,10 +1,10 @@
 #coding=utf-8
 class Stream(object):
+    __slots__ = ['first','compute_func','computed','rest']
     def __repr__(self):
         if not self.computed:
             return "Stream({},<compute_func>)".format(self.first)
         return "Stream({},{})".format(self.first,self.rest)
-        
     def __init__(self,first,compute_func):
         self.first = first
         self.compute_func = compute_func
@@ -26,10 +26,12 @@ class Stream(object):
             return self.first
 
     def getG(self,n):
+        self.get(n)
         while n:
             yield self.first
-            self = self.compute()
+            self = self.rest#self.compute()
             n -=1 
+
     def take_computed(self):
         temp = [ ]
         while self.computed:
@@ -46,10 +48,10 @@ class Stream(object):
             self.get(n)
             return self.take_computed()
 
-    def take_computed_g(self):
-        while self.computed:
-            yield self.first
-            self = self.rest
+    #def take_computed_g(self):
+    #    while self.computed:
+    #        yield self.first
+    #        self = self.rest
 
 def Inf(fn,start):
     #def compute():
@@ -59,20 +61,23 @@ def Inf(fn,start):
     return Stream(start,lambda:Inf(fn,fn(start)))
 
 a = Inf(lambda x:x+1,0)
-print( a.get(4) )
-print( a.get(0) )
-print( a.take_computed() )
-print( [i for i in a.take_computed_g() ] )
-
-#import time
-#t1 = time.clock()
-#a.take(2000000)
-#print( time.clock()-t1 )
-#t2 = time.clock()
-#list(range(2000000))
-#print( time.clock()-t2 )
 import timeit
-t1 = timeit.Timer('[i for i in range(200)]')
-t2 = timeit.Timer('[i for i in a.getG(200)]','from __main__ import a')
-print( t1.timeit() )
-print( t2.timeit() )
+def testG(n):
+    now = 0
+    while n:
+        yield now
+        now +=1
+        n-=1
+# 1 s = 1k ms
+# 1 ms = 1k us
+# 1 us = 1k ns
+
+c  = 100#0000
+t1 = timeit.Timer('list( range(c) )','from __main__ import c')
+t2 = timeit.Timer('list( testG(c) )','from __main__ import testG,c')
+t3 = timeit.Timer('list( a.getG(c) )','from __main__ import a,c')
+t  = 10000
+print( t1.timeit(t) )
+print( t3.timeit(t) )
+print( t2.timeit(t) )
+
