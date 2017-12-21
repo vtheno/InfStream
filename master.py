@@ -29,24 +29,25 @@ class Stream(object):
         self.get(n)
         while n:
             yield self.first
-            self = self.rest#self.compute()
+            self = self.rest
+            #self = self.compute()
             n -=1 
 
-    def take_computed(self):
-        temp = [ ]
-        while self.computed:
-            temp += [self.first]
-            self = self.rest
-        else:
-            return temp
+    #def take_computed(self):
+    #    temp = [ ]
+    #    while self.computed:
+    #        temp += [self.first]
+    #        self = self.rest
+    #    else:
+    #        return temp
 
-    def take(self,n):
-        temp = self.take_computed()
-        if n < len(temp):
-            return temp[0:n]
-        else:
-            self.get(n)
-            return self.take_computed()
+    #def take(self,n):
+    #    temp = self.take_computed()
+    #    if n < len(temp):
+    #        return temp[0:n]
+    #    else:
+    #        self.get(n)
+    #        return self.take_computed()
 
     #def take_computed_g(self):
     #    while self.computed:
@@ -71,20 +72,20 @@ def testG(n):
         now +=1
         n-=1
 
-
 # 1 s = 1k ms
 # 1 ms = 1k us
 # 1 us = 1k ns
 
-c  = 100000#0
+c  = 100000#00
 #t1 = timeit.Timer('list( range(c) )','from __main__ import c')
 #t2 = timeit.Timer('list( testG(c) )','from __main__ import testG,c')
 #t3 = timeit.Timer('list( a.getG(c) )','from __main__ import a,c')
 t1 = timeit.Timer('[i for i in range(c) ]','from __main__ import c')
 t2 = timeit.Timer('[i for i in testG(c) ]','from __main__ import testG,c')
 t3 = timeit.Timer('[i for i in a.getG(c) ]','from __main__ import a,c')
-t  = 10#000
+#t3  = timeit.Timer('[i for i in a.take(c) ]','from __main__ import a,c')
+t  = 10#0#0#00
 print( t1.timeit(t) )
-print( t3.timeit(t) )
 print( t2.timeit(t) )
+print( t3.timeit(t) )
 
