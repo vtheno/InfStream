@@ -77,20 +77,46 @@ def foldl(fn,accum,s):
     return Stream(fn(accum,s.first),compute_rest)
 
 reduce_stream = foldr
-
-test = Stream(1,lambda :2)
-print( test.rest )
-print( test._computed )
-def add(x):
-    return x+1
-s = make_inf(add,0)
-#print( s.take(200) is s.take(200) )
-#print( 'computed:',s.rest._computed )
-#f = map_stream(lambda x:x*2,s)
-#g = s.take(200)
-#print( g is s.take(200) )
-import timeit
-t1 = timeit.Timer('sum(range(100))')#'range(100)')
-t2 = timeit.Timer('sum(s.take(100))','from __main__ import s')
-print( t1.timeit(),t2.timeit() )
-print( s.get(3) )
+def test():
+    def show(s):
+        print( s.first )
+        print( s._compute_rest )
+        print( s.empty )
+        print( s._rest )
+        print( s._computed )
+        print( s.history )
+        print( s.length )
+        print( s.take_history )
+        
+    temp = Stream(1,lambda :2)
+    print( temp.rest )
+    print( temp._computed )
+    def add(x):
+        return x+1
+    print( 'add:',add(233) )
+    s = make_inf(add,0)
+    print( s.take(200) is s.take(200) )
+    print( 'computed:',s.rest._computed )
+    f = map_stream(lambda x:x*2,s)
+    g = s.take(200)
+    print( g is s.take(200) )
+    s1 = reduce_stream(lambda a,b:(a,b),s.first,s)
+    print( s1.take(1) )
+    s1l = foldl(lambda a,b:(a,b),s.first,s)
+    print( s1l.take(2) )
+    s1r = foldr(lambda a,b:(a,b),s.first,s)
+    print( s1r.take(2) )
+    s2 = filter_stream(lambda a:a%2==0,s)
+    print( s2.get(200),s2.take(100) )
+    s3 = map_stream(lambda x:x*2 ,s)
+    print( s3.get(2000) ,s3.take(100) )
+    #import timeit
+    #t1 = timeit.Timer('sum(range(100))')#'range(100)')
+    #t2 = timeit.Timer('sum(s.take(100))','from __main__ import s')
+    #print( t1.timeit(),t2.timeit() )
+    #print( s.get(3) )
+    print( g )
+    show( s )
+    
+if __name__ == '__main__':
+    test()
