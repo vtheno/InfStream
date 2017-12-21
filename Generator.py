@@ -84,14 +84,16 @@ def show(stream):
     print( "store:",len(stream.store) )
     return 'done'
 print( '5,g', head(5,g)  )
-print( '1000,g',head(1000,g)[-1] )
+print( '10,g',head(10,g)[-1] )
 z = Map(lambda x:x*2,g)
 print( '6,z',head(6,z) )
 c = Filter(lambda x:x%2==0,z)
 print( '7,c',head(7,c) )
 print( '5,c',get(5,c) )
 print( '100,c',len(head(100,c)) )
-
+print( show(c) )
+print( show(z) )
+print( show(g) )
 import timeit
 t1 = timeit.Timer("range(100)")
 t2 = timeit.Timer("head(100,g)",'from __main__ import head,g')
