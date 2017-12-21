@@ -97,4 +97,5 @@ print( show(g) )
 import timeit
 t1 = timeit.Timer("range(100)")
 t2 = timeit.Timer("head(100,g)",'from __main__ import head,g')
-print( t1.timeit() ,t2.timeit() )
+t  = 1000000000
+print( t1.timeit(t) ,t2.timeit(t) )
