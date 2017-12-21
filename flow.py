@@ -31,6 +31,7 @@ class Stream(object):
             temp.length  += 1
             self = self.rest
         else:
+
             return temp.history[n]
 
     def take(self,n):
@@ -112,11 +113,18 @@ def test():
     print( s3.get(2000) ,s3.take(100) )
     import timeit
     t1 = timeit.Timer('sum(range(100))')#'range(100)')
-    t2 = timeit.Timer('sum(s.take(100))','from __main__ import make_inf;s=make_inf(lambda x:x+1)')
+    t2 = timeit.Timer('sum(s.take(100))','from __main__ import make_inf;s=make_inf(lambda x:x+1,0)')
     print( 'timeit:',t1.timeit(),t2.timeit() )
     #print( s.get(3) )
     print( g )
     show( s )
-    
+    print( s.get( 99999 ) )
+    print( len(s.history) )
+    # there find the mistake
+    for i,v in zip(s.history,range(99999)):
+        print i,v,i==v
+        if i!=v:
+            print i,v
+            break
 if __name__ == '__main__':
     test()
