@@ -1,4 +1,8 @@
-* SICP-In-Python 中的 Stream 的另一种想法,
+* SICP-In-Python 中的 关于 Stream 的 一些想法,
+*** flow.py
+    - 源自 Stream.py
+*** new_some.py
+    - 尝试用 另一种形式来实现 Stream ,( 好像行不通 ,实际上不是直接这样的 
 *** Generator.py
     - 尝试用一个结构来表示一个流
     - old_init_val 作为最初的 初始值
