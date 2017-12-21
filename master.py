@@ -61,6 +61,8 @@ def Inf(fn,start):
     return Stream(start,lambda:Inf(fn,fn(start)))
 
 a = Inf(lambda x:x+1,0)
+print( list(a.getG(20)) is list(a.getG(20)))
+
 import timeit
 def testG(n):
     now = 0
@@ -68,15 +70,20 @@ def testG(n):
         yield now
         now +=1
         n-=1
+
+
 # 1 s = 1k ms
 # 1 ms = 1k us
 # 1 us = 1k ns
 
-c  = 100#0000
-t1 = timeit.Timer('list( range(c) )','from __main__ import c')
-t2 = timeit.Timer('list( testG(c) )','from __main__ import testG,c')
-t3 = timeit.Timer('list( a.getG(c) )','from __main__ import a,c')
-t  = 10000
+c  = 100000#0
+#t1 = timeit.Timer('list( range(c) )','from __main__ import c')
+#t2 = timeit.Timer('list( testG(c) )','from __main__ import testG,c')
+#t3 = timeit.Timer('list( a.getG(c) )','from __main__ import a,c')
+t1 = timeit.Timer('[i for i in range(c) ]','from __main__ import c')
+t2 = timeit.Timer('[i for i in testG(c) ]','from __main__ import testG,c')
+t3 = timeit.Timer('[i for i in a.getG(c) ]','from __main__ import a,c')
+t  = 10#000
 print( t1.timeit(t) )
 print( t3.timeit(t) )
 print( t2.timeit(t) )
