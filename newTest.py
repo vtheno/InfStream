@@ -35,10 +35,9 @@ def unZip(zips):
 
 def Box(*args):
     return args
-
-temp = zip(MyRange(0),MyRange(0,4))
-print temp 
-print unZip(temp)
+temp = list(zip(MyRange(0),MyRange(0,4)))
+print( temp )
+print( unZip(temp) )
 #print Zip(MyRange(0),MyRange(0,4))
 # x for x in (1,) <=> x where x = 1
 def x():
@@ -46,4 +45,43 @@ def x():
         if i%2 == 0:
             yield i
 # zip([ x for x in MyRange(0) if x%2==0 ],range(4))
-print [i for k,i in zip(MyRange(0,4) , x()) ]
+print( [i for k,i in zip(MyRange(0,4) , x()) ] )
+#func c | c > 0 = "c>0"
+#       | otherwise = "other"
+func = lambda c: (lambda flag : "c>0" if flag else flag)(c > 0) or (lambda otherwise: "other")(c) 
+print( func(0) )
+def warp(func):
+    # this func is tuple lambda (a,b)
+    a,b = func
+    def compute(inp):
+        r1 = a(inp)
+        if r1 !=None:
+            return r1
+        else:
+            return b(inp)
+    return compute
+
+# length [] = 0
+# length (x:xs) = 1 + length xs
+length1 = (
+    (lambda _   : 0 if _==[] else None ) ,
+    (lambda lst : 1 + length1(lst[1:]) ) )
+length1 = warp(length1)
+#print( length1( range(941) ) ) # pypy
+#print( length1( list(range(498) ) ) ) # py3
+#print( length1( range(498) ) ) # py2
+def makefunc(*funcs):
+    def delay(*args,**kw):
+        for fn in funcs:
+            r = fn(*args,**kw)
+            if r != None :
+                return r
+        return None
+    return delay
+def l1(_):
+    if _ == [ ] : return 0
+def l2(xxs):
+    return 1 + length(xxs[1:])
+length = makefunc(l1,l2)
+                
+#print( length (range(1004)) )
