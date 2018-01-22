@@ -105,37 +105,55 @@ class iterate(Inf):
     def __init__(self,func,init):
         self.func = func
         self.init = init
+        self.stop = None
         self.__name__ = self.func.__name__ + repr(self.init)
     def generator(self):
         now = self.init
+        count = 0
         while 1:
             yield now
             now = self.func(now)
+            count += 1
+            if count == self.stop:
+                break
+
 class map1(Inf):
     def __init__(self,func,stream):
         self.func = func
         self.s    = stream
+        self.stop = None
         self.__name__ = self.func.__name__ + ':' +self.s.__name__
+
     def generator(self):
         g = self.s.generator()
         now = self.func( next(g) )
+        count = 0
         while 1:
             yield now
             now = self.func( next(g) )
+            count += 1
+            if count == self.stop:
+                break
+
+
 
 class filter1(Inf):
     def __init__(self,func,stream):
         self.func = func # pred 
         self.s    = stream
+        self.stop = None
         self.__name__ = self.func.__name__ + ':' +self.s.__name__
     def generator(self):
         g = self.s.generator()
         now = next(g)
+        count = 0
         while 1:
             if self.func(now):
                 yield now
             now = next(g)
-
+            count += 1
+            if count == self.stop:
+                break
 
 inf = iterate(lambda x:x+1,0)
 #def take(n,s):
@@ -149,14 +167,16 @@ filtv = filter1(lambda x:x%2==0,mapv)
 class abc(object):
     def __init__(self,s):
         self.s   = s
-        self.env = {}
+        self.env = {}#[] #{}
+        self.length = 0
     def __call__(self,n):
         if n not in self.env.keys():
-            self.env[n] = [i for v,i in zip(range(n),self.s)]
+            self.s.stop = n
+            self.env[n] = [i for i in self.s.generator()]#list(self.s.generator())
+            self.s.stop = None
             return self.env[n]
         else:
             return self.env[n]
-
 class makeTake:
     def __init__(self,env):
         self.env = env
@@ -171,20 +191,23 @@ take = makeTake(env)
 print( env )
 print( take(4,inf) )
 print( take(4,inf) == take(4,inf) )
+print( take(5,inf) )
 print( env )
 print( take(4,mapv) )
 print( take(4,mapv) == take(4,mapv) )
+print( take(5,mapv) )
 print( env )
 print( take(4,filtv)  )
 print( take(4,filtv) == take(4,filtv) )
+print( take(5,filtv) )
 print( env )
 import timeit 
 #t1 = timeit.Timer("take(100000,inf)","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(100000))")
 #t1 = timeit.Timer("take(1000,inf)","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(1000))")
-t1 = timeit.Timer("take(1000000,inf)","from __main__ import take,inf")
+t1 = timeit.Timer("take(      1000000,inf)","from __main__ import take,inf")
 t2 = timeit.Timer("list(range(1000000))")
-t  = 2
+t  = 1
 print( t1.timeit(t) )
 print( t2.timeit(t) )
