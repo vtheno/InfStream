@@ -95,6 +95,7 @@ length = makefunc(l1,l2)
         
 class Inf(object):
     # abstract class 
+    __slots__ = ['func','s','stop','init','__name__']
     def __repr__(self):
         return "< {} {} >".format(self.__class__.__name__,self.__name__)
     def generator(self): 
@@ -103,6 +104,7 @@ class Inf(object):
         return self.generator()
 
 class iterate(Inf):
+    __slots__ = ['func','init','stop','__name__']
     def __init__(self,func,init):
         self.func = func
         self.init = init
@@ -119,6 +121,7 @@ class iterate(Inf):
                 break
 
 class map1(Inf):
+    __slots__ = ['func','s','stop','__name__']
     def __init__(self,func,stream):
         self.func = func
         self.s    = stream
@@ -137,6 +140,7 @@ class map1(Inf):
                 break
 
 class filter1(Inf):
+    __slots__ = ['func','s','stop','__name__']
     def __init__(self,func,stream):
         self.func = func # pred 
         self.s    = stream
@@ -188,6 +192,7 @@ mapv = map1(lambda x:x,inf)
 filtv = filter1(lambda x:x%2==0,mapv)
 
 class abc(object):
+    __slots__ = ['s','env']
     def __repr__(self):
         return repr(self.s)+repr(self.env)
     def __init__(self,s):
@@ -238,8 +243,8 @@ print( ta2s == ta2 )
 import timeit 
 #t1 = timeit.Timer("take(100000,inf)","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(100000))")
-t1 = timeit.Timer("list(take(10000000,inf))","from __main__ import take,inf")
-t2 = timeit.Timer("list(range(10000000))")
+t1 = timeit.Timer("list(take(1000000,inf))","from __main__ import take,inf")
+t2 = timeit.Timer("list(range(1000000))")
 #t1 = timeit.Timer("list(take( 1000000,inf))","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(1000000))")
 t  = 1
