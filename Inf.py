@@ -1,4 +1,6 @@
 #coding=utf-8
+"""
+this is nothing 
 class MyRange(object):
     def __init__(self,start,end=None,step=1):
         self.start = start
@@ -84,17 +86,17 @@ def l2(xxs):
     return 1 + length(xxs[1:])
 length = makefunc(l1,l2)
 #print( length (range(1004)) )
-
-def iterate(func,init):
-    now = init
-    while 1:
-        yield now
-        now = func(now)
+"""
+#def iterate(func,init):
+#    now = init
+#    while 1:
+#        yield now
+#        now = func(now)
         
 class Inf(object):
     # abstract class 
     def __repr__(self):
-        return "< {} {} >".format(self.__class__.__name__,self.func)
+        return "< {} {} >".format(self.__class__.__name__,self.__name__)
     def generator(self): 
         raise NotImplementedError
     def __iter__(self):
@@ -103,6 +105,7 @@ class iterate(Inf):
     def __init__(self,func,init):
         self.func = func
         self.init = init
+        self.__name__ = self.func.__name__ + repr(self.init)
     def generator(self):
         now = self.init
         while 1:
@@ -112,6 +115,7 @@ class map1(Inf):
     def __init__(self,func,stream):
         self.func = func
         self.s    = stream
+        self.__name__ = self.func.__name__ + ':' +self.s.__name__
     def generator(self):
         g = self.s.generator()
         now = self.func( next(g) )
@@ -123,6 +127,7 @@ class filter1(Inf):
     def __init__(self,func,stream):
         self.func = func # pred 
         self.s    = stream
+        self.__name__ = self.func.__name__ + ':' +self.s.__name__
     def generator(self):
         g = self.s.generator()
         now = next(g)
@@ -133,16 +138,53 @@ class filter1(Inf):
 
 
 inf = iterate(lambda x:x+1,0)
-def take(n,s):
-    return [i for v,i in zip(range(n),s)]
-
-print take(4,inf)
-print take(4,inf)
+#def take(n,s):
+#    return [i for v,i in zip(range(n),s)]
+# head <=> take 1 inf 
+# take 
+#print( take(4,inf) )
+#print( take(4,inf) )
 mapv = map1(lambda x:x,inf)
-print mapv
-print take(4,mapv)
-print take(4,mapv)
 filtv = filter1(lambda x:x%2==0,mapv)
-print filtv
-print take(4,filtv)
-print take(4,filtv)
+class abc(object):
+    def __init__(self,s):
+        self.s   = s
+        self.env = {}
+    def __call__(self,n):
+        if n not in self.env.keys():
+            self.env[n] = [i for v,i in zip(range(n),self.s)]
+            return self.env[n]
+        else:
+            return self.env[n]
+
+class makeTake:
+    def __init__(self,env):
+        self.env = env
+    def __call__(self,n,s):
+        if s.__name__ not in self.env.keys():
+            self.env[s.__name__] = abc(s)
+            return self.env[s.__name__](n)
+        else:
+            return self.env[s.__name__](n)
+env = {}
+take = makeTake(env)
+print( env )
+print( take(4,inf) )
+print( take(4,inf) == take(4,inf) )
+print( env )
+print( take(4,mapv) )
+print( take(4,mapv) == take(4,mapv) )
+print( env )
+print( take(4,filtv)  )
+print( take(4,filtv) == take(4,filtv) )
+print( env )
+import timeit 
+#t1 = timeit.Timer("take(100000,inf)","from __main__ import take,inf")
+#t2 = timeit.Timer("list(range(100000))")
+#t1 = timeit.Timer("take(1000,inf)","from __main__ import take,inf")
+#t2 = timeit.Timer("list(range(1000))")
+t1 = timeit.Timer("take(1000000,inf)","from __main__ import take,inf")
+t2 = timeit.Timer("list(range(1000000))")
+t  = 2
+print( t1.timeit(t) )
+print( t2.timeit(t) )
