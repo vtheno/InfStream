@@ -83,5 +83,66 @@ def l1(_):
 def l2(xxs):
     return 1 + length(xxs[1:])
 length = makefunc(l1,l2)
-                
 #print( length (range(1004)) )
+
+def iterate(func,init):
+    now = init
+    while 1:
+        yield now
+        now = func(now)
+        
+class Inf(object):
+    # abstract class 
+    def __repr__(self):
+        return "< {} {} >".format(self.__class__.__name__,self.func)
+    def generator(self): 
+        raise NotImplementedError
+    def __iter__(self):
+        return self.generator()
+class iterate(Inf):
+    def __init__(self,func,init):
+        self.func = func
+        self.init = init
+    def generator(self):
+        now = self.init
+        while 1:
+            yield now
+            now = self.func(now)
+class map1(Inf):
+    def __init__(self,func,stream):
+        self.func = func
+        self.s    = stream
+    def generator(self):
+        g = self.s.generator()
+        now = self.func( next(g) )
+        while 1:
+            yield now
+            now = self.func( next(g) )
+
+class filter1(Inf):
+    def __init__(self,func,stream):
+        self.func = func # pred 
+        self.s    = stream
+    def generator(self):
+        g = self.s.generator()
+        now = next(g)
+        while 1:
+            if self.func(now):
+                yield now
+            now = next(g)
+
+
+inf = iterate(lambda x:x+1,0)
+def take(n,s):
+    return [i for v,i in zip(range(n),s)]
+
+print take(4,inf)
+print take(4,inf)
+mapv = map1(lambda x:x,inf)
+print mapv
+print take(4,mapv)
+print take(4,mapv)
+filtv = filter1(lambda x:x%2==0,mapv)
+print filtv
+print take(4,filtv)
+print take(4,filtv)
