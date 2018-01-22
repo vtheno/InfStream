@@ -101,6 +101,7 @@ class Inf(object):
         raise NotImplementedError
     def __iter__(self):
         return self.generator()
+
 class iterate(Inf):
     def __init__(self,func,init):
         self.func = func
@@ -135,8 +136,6 @@ class map1(Inf):
             if count == self.stop:
                 break
 
-
-
 class filter1(Inf):
     def __init__(self,func,stream):
         self.func = func # pred 
@@ -155,6 +154,29 @@ class filter1(Inf):
             if count == self.stop:
                 break
 
+def copy(s):
+    info_func = s.func
+    info_stop = s.stop
+    info_name = s.__name__
+    if isinstance(s,iterate):
+        info_init = s.init
+        i = iterate(info_func,info_init)
+        i.stop = info_stop
+        i.__name__ = info_name
+        return i
+    elif isinstance(s,map1):
+        info_s = s.s
+        i = map1(info_func,info_s)
+        i.stop = info_stop
+        i.__name__ = info_name
+        return i
+    elif isinstance(s,filter1):
+        info_s = s.s
+        i = map1(info_func,info_s)
+        i.stop = info_stop
+        i.__name__ = info_name
+        return i
+
 inf = iterate(lambda x:x+1,0)
 #def take(n,s):
 #    return [i for v,i in zip(range(n),s)]
@@ -164,15 +186,19 @@ inf = iterate(lambda x:x+1,0)
 #print( take(4,inf) )
 mapv = map1(lambda x:x,inf)
 filtv = filter1(lambda x:x%2==0,mapv)
+
 class abc(object):
+    def __repr__(self):
+        return repr(self.s)+repr(self.env)
     def __init__(self,s):
         self.s   = s
         self.env = {}#[] #{}
-        self.length = 0
     def __call__(self,n):
         if n not in self.env.keys():
             self.s.stop = n
-            self.env[n] = [i for i in self.s.generator()]#list(self.s.generator())
+            self.env[n] = copy(self.s)
+            #[i for i in self.s]
+            #list(self.s.generator())
             self.s.stop = None
             return self.env[n]
         else:
@@ -189,25 +215,33 @@ class makeTake:
 env = {}
 take = makeTake(env)
 print( env )
-print( take(4,inf) )
+print( list( take(4,inf) ) )
 print( take(4,inf) == take(4,inf) )
-print( take(5,inf) )
+print( list( take(5,inf) ) )
 print( env )
-print( take(4,mapv) )
+print( list( take(4,mapv) ) )
 print( take(4,mapv) == take(4,mapv) )
-print( take(5,mapv) )
+print( list( take(5,mapv) ) )
 print( env )
-print( take(4,filtv)  )
-print( take(4,filtv) == take(4,filtv) )
-print( take(5,filtv) )
+print( list( take(4,filtv)  ) )
+print( take(4,filtv) == take(4,filtv) ) 
+print( list( take(5,filtv) ) )
 print( env )
+
+ta4 = take(4 ,inf)
+ta2 = take(2 ,inf)
+ta2s = take(2,ta4)
+print( list(ta2s ) )
+print( list(ta2) )
+print( list(ta4) )
+print( ta2s == ta2 )
 import timeit 
 #t1 = timeit.Timer("take(100000,inf)","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(100000))")
-#t1 = timeit.Timer("take(1000,inf)","from __main__ import take,inf")
-#t2 = timeit.Timer("list(range(1000))")
-t1 = timeit.Timer("take(      1000000,inf)","from __main__ import take,inf")
-t2 = timeit.Timer("list(range(1000000))")
+t1 = timeit.Timer("list(take(10000000,inf))","from __main__ import take,inf")
+t2 = timeit.Timer("list(range(10000000))")
+#t1 = timeit.Timer("list(take( 1000000,inf))","from __main__ import take,inf")
+#t2 = timeit.Timer("list(range(1000000))")
 t  = 1
 print( t1.timeit(t) )
 print( t2.timeit(t) )
