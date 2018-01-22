@@ -150,8 +150,8 @@ class filter1(Inf):
         while 1:
             if self.func(now):
                 yield now
+                count += 1
             now = next(g)
-            count += 1
             if count == self.stop:
                 break
 
