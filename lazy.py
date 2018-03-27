@@ -40,13 +40,6 @@ def cycle(seqfn):
     # tmp.Value = seqfn (lambda : tmp.Value)
     tmp.Value = seqfn (lambda : tmp.Value)
     return tmp.Value
-class Cycle(object):
-    def __init__(self):
-        self.tmp = Ref(S(None,None))
-    def __call__(self,seqfn):
-        self.tmp.Value = seqfn(lambda : self.tmp.Value)
-        return self.tmp.Value
-cycle = Cycle()
 def take (s,n): # take : 'a t * int -> 'a list
     #print "take:",type(s),s
     if n == 0 or (s[0] == None and s[1] == None) :#( s.hd == None and s.tl == None):

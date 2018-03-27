@@ -243,10 +243,10 @@ print( ta2s == ta2 )
 import timeit 
 #t1 = timeit.Timer("take(100000,inf)","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(100000))")
-t1 = timeit.Timer("list(take(1000000,inf))","from __main__ import take,inf")
-t2 = timeit.Timer("list(range(1000000))")
+t1 = timeit.Timer("map(lambda x:x+1,range(1000000))")
+t2 = timeit.Timer("map1(lambda x:x+1,inf)","from __main__ import inf,map1")
 #t1 = timeit.Timer("list(take( 1000000,inf))","from __main__ import take,inf")
 #t2 = timeit.Timer("list(range(1000000))")
-t  = 1
+t = 10000000
 print( t1.timeit(t) )
 print( t2.timeit(t) )
