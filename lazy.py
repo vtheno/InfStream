@@ -1,22 +1,23 @@
 #coding=utf-8
 class Ref(object):
+    __slots__ = ["Value"]
     def __init__(self,v):
         self.Value = v
     def __repr__(self):
         return "(Ref {})".format(repr(self.Value))
-    def __invert__(self):
-        return self.Value
-    def __le__(self,v):
-        self.Value = v
-        return self
+    #def __invert__(self):
+    #    return self.Value
+    #def __le__(self,v):
+    #    self.Value = v
+    #    return self
 
-class S(object):
-    def __init__(self,a,b):
-        self.hd = a # if a == None then get self.hd raise Empty error
-        self.tl = b #
-    def __repr__(self):
-        #print "repr:",type(self.tl)
-        return "s<{},delay>".format(repr(self.hd))
+#class S(object):
+#    def __init__(self,a,b):
+#        self.hd = a # if a == None then get self.hd raise Empty error
+#        self.tl = b #
+#    def __repr__(self):
+#        #print "repr:",type(self.tl)
+#        return "s<{},delay>".format(repr(self.hd))
 def S(a,b):
     return [a,b]
 
@@ -49,8 +50,8 @@ def take (s,n): # take : 'a t * int -> 'a list
 def take1 (s,n):
     while not (n ==0 or (s[0] == None and s[1] == None)):
         #while not (n == 0 or ( s.hd == None and s.tl == None)) :
-        yield s[0]#s.hd
         n -= 1
+        yield s[0]#s.hd
         #s = force(s.tl)
         s = force(s[1])
 def sMap (f,s):
@@ -98,15 +99,33 @@ fib = cycle ( lambda fibf :
                           add(fibf(),force((fibf())[1])))))
 nature = cycle (lambda g :
                 cons( 0 ,  lambda : sMap ( lambda x : x+1,g())) )
-nature = iterates(lambda x:x-1,0)
+head2 = list( take1(nature,2) )
+print ( head2 )
+print ( head2[0] is nature[0] )
+print ( head2[1] is ((nature[1]).Value)[0])
+print ( (nature[1].Value) )
+print ( ((nature[1].Value)[1]).Value)
+nature = iterates(lambda x:x+1,0)
 #print( list(take1(nature,1000000)) )
 if __name__ == "__main__":
     import cProfile
     import timeit
-    t1 = timeit.Timer("map(lambda x:x+1, range(1000000))")
-    t2 = timeit.Timer("take1(tmp,              1000000)",
-                      "from __main__ import take1,nature,sMap;tmp = sMap(lambda x:x+1,nature)")
+    t01 = timeit.Timer("map(lambda x:x+1,tmp)","tmp = range(1000000)")
+    t02 = timeit.Timer("take1(tmp,1000000)",
+                       "from __main__ import take1,nature,sMap;tmp = sMap(lambda x:x+1,nature)")
+    t11 = timeit.Timer("list(t2)","tmp = range(1000000);t2=map(lambda x:x+1, tmp)")
+    t12 = timeit.Timer("list(t2)",
+                       "from __main__ import take1,nature,sMap;tmp = sMap(lambda x:x+1,nature);t2=take1(tmp,1000000)")
+    t21 = timeit.Timer("[i for i in t2]","tmp = range(1000000);t2=map(lambda x:x+1, tmp)")
+    t22 = timeit.Timer("[i for i in t2]",
+                       "from __main__ import take1,nature,sMap;tmp = sMap(lambda x:x+1,nature);t2=take1(tmp,1000000)") 
+    #t2 = timeit.Timer("sMap(lambda x:x+1,nature)",
+    #                  "from __main__ import take1,nature,sMap")
     t = 10000000
-    print( t1.timeit(t) )
-    print( t2.timeit(t) )
-    # print( cProfile.run(
+    print( t01.timeit(t) )
+    print( t02.timeit(t) )
+    print( t11.timeit(t) )
+    print( t12.timeit(t) )
+    print( t21.timeit(t) )
+    print( t22.timeit(t) ) # ...
+    #print( cProfile.run("sMap(lambda x:x+1,nature)") )
