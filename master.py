@@ -103,7 +103,6 @@ class WeGet(object):
             #print( self.count_n ,self.history)
         else:
             return self.history[n]
-
     def take(self,n):
         #print( self.count_n,self.obj,self.history,self.take_history )
         if n > self.count_n:
@@ -123,10 +122,11 @@ c = WeGet(a)
 #print('after:', a, '|',c.obj)
 #print( c.history,c.count_n )
 #print( c.take(20) )
+#print( c.take(1000000) )
 import timeit
-t1 = timeit.Timer('range(100000)')
-t2 = timeit.Timer('c.take(100000)','from __main__ import c')
-t  = 1000000
+t1 = timeit.Timer('map(lambda x:x+1,range(1000000))')
+t2 = timeit.Timer('map(lambda x:x+1,c.take(1000000))','from __main__ import c')
+t  = 10000000
 print( t1.timeit(t) )
 print( t2.timeit(t) )
 #print( list(a.getG(20)) is list(a.getG(20)))
