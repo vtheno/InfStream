@@ -1,28 +1,4 @@
 #coding=utf-8
-"""
-def sFilter (pred,s):
-    if s[0] == None and s[1] == None:
-        return s
-    if pred(s[0]) :
-        return cons ( s[0] , lambda : sFilter(pred,force(s[1])))
-    return sFilter(pred,force(s[1]))
-def sFoldl (func,acc,s): # it is list
-    if (s[0] == None and s[1] == None):
-        return s
-    return cons ( acc ,lambda :sFoldl(func,func(s[0],acc),force(s[1])) )
-"""
-"""
-def append (xq,yq) :
-    if xq[0] == None and xq[1] == None:
-        return yq
-    return S ( xq[0],delay (lambda : append ( force(xq[1]) , yq )))
-def fromList (lst):
-    if lst == []:
-        return S (None,None)
-    return cons (lst[0], lambda : fromList(lst[1:]) )
-def cList(s):
-    return [i for i in s]
-"""
 from clazy import *
 nature = iterates(lambda x:x+1,0)
 #smap = sMap(lambda x:x+1,nature)
@@ -40,7 +16,7 @@ if __name__ == "__main__":
     t31 = timeit.Timer("[i for i in t2]","tmp = range(1000000);t2=map(lambda x:x+1, tmp)")
     t32 = timeit.Timer("List(t2)",
                        "from __main__ import take,nature,sMap,List;tmp = sMap(lambda x:x+1,nature);t2=take(tmp,1000000)") 
-    t = 1#00000000
+    t = 10#0000000
     #print( "t01",t01.timeit(t) )
     #print( "t02",t02.timeit(t) )
     print( "t11",t11.timeit(t) )
