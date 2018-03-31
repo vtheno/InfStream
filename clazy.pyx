@@ -33,6 +33,14 @@ cdef list Map (object f,list s):
     return cons ( f(s[0]), lambda :Map(f,force (s[1])) )
 def sMap(f,s):
     return Map(f,s)
+cdef list Filter (object f,list s):
+    if s == [None,None]:
+        return s
+    if f(s[0]) :
+        return cons ( s[0] , lambda : Filter(f,force(s[1])))
+    return Filter(f,force(s[1]))
+def sFilter(f,s):
+    return Filter(f,s)
 cdef list Mpairs(list xq,list yq):
     return cons ( (xq[0],yq[0]),lambda :Mpairs(force(xq[1]),force(yq[1])))
 def pairs(xq,yq):
@@ -49,7 +57,7 @@ def iterates(f,init):
 nature = iterates(lambda x:x+1,0)
 def take(list s,int n):
     #print type(s),s
-    while n > 1 and (s[0] != None and s[1] != None ):
+    while n > 1 and (s != [None,None]): #(s[0] != None and s[1] != None ):
         yield s[0]
         n-=1
         s = force(s[1])

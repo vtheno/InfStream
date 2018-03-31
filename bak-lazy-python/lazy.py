@@ -1,5 +1,5 @@
 #coding=utf-8
-"""
+
 class Ref(object):
     __slots__ = ["Value"]
     def __init__(self,v):
@@ -14,7 +14,7 @@ class Ref(object):
     #def __le__(self,v):
     #    self.Value = v
     #    return self
-"""
+
 #class S(object):
 #    def __init__(self,a,b):
 #        self.hd = a # if a == None then get self.hd raise Empty error
@@ -22,7 +22,7 @@ class Ref(object):
 #    def __repr__(self):
 #        #print "repr:",type(self.tl)
 #        return "s<{},delay>".format(repr(self.hd))
-"""
+
 def S(a,b):
     return [a,b]
 def delay(x):
@@ -45,8 +45,6 @@ def cycle(seqfn):
     # tmp.Value = seqfn (lambda : tmp.Value)
     tmp = Ref ( seqfn (lambda : tmp.Value) )
     return tmp.Value
-"""
-"""
 def take (s,n): # take : 'a t * int -> 'a list
     #print "take:",type(s),s
     if n == 0 or (s[0] == None and s[1] == None) :#( s.hd == None and s.tl == None):
@@ -60,8 +58,6 @@ def take1 (s,n):
         yield s[0]#s.hd
         #s = force(s.tl)
         s = force(s[1])
-"""
-"""
 def take (s,n):
     while n > 1 and (s[0] != None and s[1] != None ):
         yield s[0]
@@ -69,8 +65,6 @@ def take (s,n):
         s = force(s[1])
     else:
         yield s[0]
-"""
-"""
 def sMap (f,s):
     #if (s.hd == None and s.tl == None):
     #    return [ ]
@@ -78,8 +72,7 @@ def sMap (f,s):
     if s[0] == None and s[1] == None:
         return s
     return cons ( f(s[0]), lambda :sMap(f,force (s[1])) )
-"""
-"""
+
 def sFilter (pred,s):
     if s[0] == None and s[1] == None:
         return s
@@ -90,8 +83,6 @@ def sFoldl (func,acc,s): # it is list
     if (s[0] == None and s[1] == None):
         return s
     return cons ( acc ,lambda :sFoldl(func,func(s[0],acc),force(s[1])) )
-"""
-"""
 def pairs(xq,yq):
     #return cons( (xq.hd,yq.hd) ,lambda : pairs( force (xq.tl) , force(yq.tl)))
     return cons ( (xq[0],yq[0]),lambda :pairs(force(xq[1]),force(yq[1])))
@@ -101,8 +92,6 @@ def add (xq,yq):
 def iterates(f,x):
     return cycle (lambda g :
                   cons( x ,  lambda : sMap (f,g()) ) )
-"""
-"""
 def append (xq,yq) :
     if xq[0] == None and xq[1] == None:
         return yq
@@ -111,52 +100,9 @@ def fromList (lst):
     if lst == []:
         return S (None,None)
     return cons (lst[0], lambda : fromList(lst[1:]) )
-def cList(s):
+def List(s):
     return [i for i in s]
-"""
-"""
-t1 = fromList( list(range(100)) ) 
-print( "t1:",t1 )
-print( [ i for i in take(t1,10) ] )
-f = lambda g : cons("Never!",g)
-never = cycle (f)
-print( never )
-print( force(never[1]) ) # [ "Never!",delay ] => ["Never!",["Never!",...]]
-print( never )
-test = append (t1,never)
-print( list( take(test ,100)) )
-zero = cycle (lambda g : cons (0,g) )
-print( id (zero[1]) )
-force(zero[1])
-print( id (zero[1]) )
-print( id (((zero[1]).Value)[1]))
-one  = cycle (lambda g : cons (1,g) )
-print ( [i for i in take(one,1)] )
-fib = cycle ( lambda fibf :
-              cons (1,lambda :
-                    cons (1,lambda :
-                          add(fibf(),force((fibf())[1])))))
-nature = cycle (lambda g :
-                cons( 0 ,  lambda : sMap ( lambda x : x+1,g())) )
-head2 = List( take(nature,2) )
-print ( head2 )
-print ( head2[0] is nature[0] )
-print ( head2[1] is ((nature[1]).Value)[0])
-print ( (nature[1].Value) )
-print ( ((nature[1].Value)[1]) )
-print ( [i for i in take(nature,20) ] )
-even = sFilter(lambda x:x%2==0 ,nature)
-print ( [i for i in take(even,20)] )
-sumNature = sFoldl(lambda a,b: a+b,nature[0],force(nature[1]))
-print( [i for i in take(sumNature,20)] )
-"""
-
-from clazy import *
 nature = iterates(lambda x:x+1,0)
-#print List(take(nature,200))
-smap = sMap(lambda x:x+1,nature)
-#print List(take(smap,1000000))
-#print List(take(nature,200000))
 if __name__ == "__main__":
     import timeit
     t01 = timeit.Timer("map(lambda x:x+1,tmp)","tmp = range(1000000)")
@@ -172,8 +118,6 @@ if __name__ == "__main__":
     t32 = timeit.Timer("List(t2)",
                        "from __main__ import take,nature,sMap,List;tmp = sMap(lambda x:x+1,nature);t2=take(tmp,1000000)") 
     t = 1#00000000
-    #print( "t01",t01.timeit(t) )
-    #print( "t02",t02.timeit(t) )
     print( "t11",t11.timeit(t) )
     print( "t12",t12.timeit(t) )
     print( "t21",t21.timeit(t) )
