@@ -1,2 +1,8 @@
 *~
 *.pyc
+Cython
+Cython\*
+build\*
+build
+*.c
+*.pyd
